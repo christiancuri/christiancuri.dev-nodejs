@@ -1,0 +1,75 @@
+{
+  "name": "backend-nodejs",
+  "version": "1.0.0",
+  "main": "dist/main.js",
+  "module": "dist/main.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "export PORT=8080 ENV=PRODUCTON && node dist/main.js",
+    "dev:2": "nodemon",
+    "dev": "rimraf dist && mkdir dist && yarn postbuild && nodemon --watch \"src/\" --exec \"ts-node src/main\" -e ts",
+    "prod": "export ENV=PRODUCTON && nodemon",
+    "build:watch": "tsc --watch",
+    "build": "yarn build:clean && tsc ; yarn postbuild",
+    "build:clean": "rimraf dist",
+    "postbuild": "copyfiles -u 1 -e \"**/*.ts\" \"src/**/*\" dist",
+    "lint:fix": "npm run lint --fix",
+    "lint": "eslint ./src --ext .ts",
+    "check:typegoose": "tsd",
+    "postinstall": "patch-package"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-push": "yarn lint && yarn build && yarn build:clean"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "dependencies": {
+    "@typegoose/typegoose": "7.4.1",
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.19.0",
+    "copyfiles": "^2.4.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.2.0",
+    "helmet": "^3.22.0",
+    "jsonwebtoken": "^8.5.1",
+    "module-alias": "^2.2.2",
+    "mongoose": "^5.4.21",
+    "mongoose-lean-getters": "^0.1.2",
+    "morgan": "^1.10.0",
+    "node-forge": "^0.10.0",
+    "patch-package": "^6.2.2",
+    "rimraf": "^3.0.2",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
+    "@types/bcrypt": "^3.0.0",
+    "@types/cors": "^2.8.7",
+    "@types/express": "^4.17.7",
+    "@types/express-fileupload": "^1.1.3",
+    "@types/helmet": "^0.0.47",
+    "@types/mongoose": "^5.10.3",
+    "@types/morgan": "^1.9.1",
+    "@types/node": "^14.0.27",
+    "@typescript-eslint/eslint-plugin": "^4.7.0",
+    "@typescript-eslint/parser": "^4.7.0",
+    "esbuild-node-tsc": "^1.0.4",
+    "eslint": "^7.13.0",
+    "eslint-plugin-import-helpers": "^1.1.0",
+    "husky": "^4.2.5",
+    "nodemon": "^2.0.3",
+    "prettier": "^2.0.5",
+    "standard-version": "^7.0.0"
+  }
+}

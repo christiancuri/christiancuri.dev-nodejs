@@ -1,0 +1,32 @@
+diff --git a/node_modules/@typegoose/typegoose/lib/internal/processProp.js b/node_modules/@typegoose/typegoose/lib/internal/processProp.js
+index c3f3865..23d1339 100644
+--- a/node_modules/@typegoose/typegoose/lib/internal/processProp.js
++++ b/node_modules/@typegoose/typegoose/lib/internal/processProp.js
+@@ -17,6 +17,14 @@ function processProp(input) {
+     const name = utils.getName(target);
+     const rawOptions = Object.assign({}, input.options);
+     let Type = Reflect.getMetadata(constants_1.DecoratorKeys.Type, target, key);
++
++    if (Type.name === 'Reference') {
++      Type = typegoose_1.mongoose.Schema.Types.ObjectId;
++    }
++    if (Type.name === 'AnyArray') {
++      Type = typegoose_1.mongoose.Schema.Types.Array;
++    }
++
+     const propKind = (_a = input.whatis) !== null && _a !== void 0 ? _a : detectWhatIsIt(Type);
+     logSettings_1.logger.debug('Starting to process "%s.%s"', name, key);
+     utils.assertion(typeof key === 'string', new Error(`Property Key in typegoose cannot be an symbol! (${name}.${String(key)})`));
+diff --git a/node_modules/@typegoose/typegoose/lib/internal/utils.js b/node_modules/@typegoose/typegoose/lib/internal/utils.js
+index d4e5e4c..3d930dc 100644
+--- a/node_modules/@typegoose/typegoose/lib/internal/utils.js
++++ b/node_modules/@typegoose/typegoose/lib/internal/utils.js
+@@ -421,7 +421,7 @@ function warnMixed(target, key) {
+     switch ((_b = modelOptions.options) === null || _b === void 0 ? void 0 : _b.allowMixed) {
+         default:
+         case constants_1.Severity.WARN:
+-            logSettings_1.logger.warn('Setting "Mixed" for property "%s.%s"\nLook here for how to disable this message: https://typegoose.github.io/typegoose/docs/api/decorators/modelOptions/#allowmixed', name, key);
++            // logSettings_1.logger.warn('Setting "Mixed" for property "%s.%s"\nLook here for how to disable this message: https://typegoose.github.io/typegoose/docs/api/decorators/modelOptions/#allowmixed', name, key);
+             break;
+         case constants_1.Severity.ALLOW:
+             break;
