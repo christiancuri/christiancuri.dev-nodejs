@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Model, Document, DocumentQuery } from "mongoose";
+/* eslint-disable @typescript-eslint/no-empty-interface */
+/* eslint-disable @typescript-eslint/ban-types */
+import { Model, Document, Query } from "mongoose";
 
 import { getModelForClass } from "@typegoose/typegoose";
 
@@ -15,7 +17,7 @@ export type Doc<T> = Partial<
       ? string
       : Partial<T[P]> extends Reference<infer R>[]
       ? string[]
-      : T[P] extends string
+      : T[P] extends String
       ? string
       : T[P] extends AnyArray
       ? any[]
@@ -65,27 +67,25 @@ type ArrayFixOnlyActualRefs<T> = T extends (infer A)[]
   ? OnlyActualRefs<A>
   : OnlyActualRefs<T>;
 
-// TODO: Create a function to get populated fields with right types
-// (Query.prototype as any).populateTs = function populateTs(props) {
+// Query.prototype.populateTs = function populateTs(props) {
 //   return this.populate(props);
 // };
 
-export type MyModel<T, K extends Document = DocumentType<T>> = Model<K>;
+export interface MyModel<T, K extends Document = DocumentType<T>>
+  extends Model<K> {}
 
-export type MyDocumentQuery<
-  T,
-  DocType extends Document,
-  QueryHelpers = any
-> = DocumentQuery<T, DocType, QueryHelpers>;
+export interface MyDocumentQuery<T, DocType extends Document, QueryHelpers = {}>
+  extends Query<T, DocType, QueryHelpers> {}
 
 // declare module "mongoose" {
-//   interface DocumentQuery<T, DocType extends Document, QueryHelpers = any>
+//   interface Query<T, DocType extends Document<any>, QueryHelpers = {}>
 //     extends mquery {
 //     populateTs<P extends keyof ArrayFixOnlyActualRefs<QueryHelpers>>(
 //       prop: P[],
-//     ): DocumentQuery<
+//     ): Query<
 //       Doc<Populate<T extends (infer A)[] ? QueryHelpers[] : QueryHelpers, P>>,
-//       Doc<Populate<QueryHelpers, P>> & Document
+//       Doc<Populate<QueryHelpers, P>> & Document,
+//       QueryHelpers
 //     > &
 //       QueryHelpers;
 //   }

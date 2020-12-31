@@ -60,7 +60,11 @@ export async function validateToken({
     expired,
     data: undefined,
   });
-  const valid = (info: any) => ({ valid: true, expired: false, data: info });
+  const valid = (info: TokenProps) => ({
+    valid: true,
+    expired: false,
+    data: info,
+  });
 
   if (!jwt) return invalid(false);
 
@@ -76,13 +80,13 @@ export async function validateToken({
 }
 
 export async function needValidate(url: string): Promise<boolean> {
-  const whitelist = ["/api/system/login"];
+  const whitelist = ["/api/system/login", "/api/blog/posts"];
 
   const whiteListEndsWidth = [];
 
-  for (const wlUrl of whiteListEndsWidth) if (url.endsWith(wlUrl)) return false;
-
   for (const wlUrl of whitelist) if (url.startsWith(wlUrl)) return false;
+
+  for (const wlUrl of whiteListEndsWidth) if (url.endsWith(wlUrl)) return false;
 
   return true;
 }

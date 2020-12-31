@@ -7,21 +7,15 @@ import { TimeStamps } from "@typegoose/typegoose/lib/defaultClasses";
 
 @plugin(getters)
 @modelOptions({
-  options: { customName: "user" },
+  options: { customName: "postCounter" },
   schemaOptions,
 })
-export class IUser extends TimeStamps {
+export class IPostCounter extends TimeStamps {
   @prop(id)
   public _id?: string;
 
-  @prop({ required: true })
-  public email: string;
-
-  @prop({ required: true })
-  public name: string;
-
-  @prop({ required: true })
-  public hash: string;
+  @prop({ default: 0 })
+  public counter?: number;
 }
 
-export const User = getModel(IUser);
+export const PostCounter = getModel(IPostCounter);

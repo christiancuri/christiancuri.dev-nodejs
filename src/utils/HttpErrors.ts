@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export class HTTPClientError extends Error {
   statusCode: any;
-  constructor(message) {
+  constructor(message: any) {
     if (message instanceof Error) {
       super(message.message);
       this.stack = message.stack;

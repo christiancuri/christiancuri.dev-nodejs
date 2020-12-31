@@ -2,15 +2,15 @@ type Props = {
   skip?: string | number;
   limit?: string | number;
 };
-export function parsePagination({
-  skip,
-  limit,
-}: Props): {
+export function parsePagination(
+  { skip, limit }: Props,
+  maxLimit = 25,
+): {
   skip: number;
   limit: number;
 } {
   return {
-    skip: skip && limit ? Number(skip) * Number(limit) : 0,
-    limit: Number(limit || 25),
+    skip: Number(skip || 0),
+    limit: Math.min(Number(limit || maxLimit), maxLimit),
   };
 }

@@ -3,7 +3,6 @@ import forge from "node-forge";
 
 import * as Crypt from "./TokenCrypt";
 
-// These functions use dynamic vector and key (or manual key [Eg: key = userId]) to encrypt data using aes-cbc
 const algorithm = "aes-256-cbc";
 const aesHashSize = 2 << 4;
 
