@@ -1,23 +1,53 @@
-import { IPost, Post, PostCounter, User } from "@models";
+import { IPost, Post, PostArchive, PostCounter, User } from "@models";
 
-import { Doc, parsePagination, Populate } from "@utils";
+import { Doc, HTTP400Error, parsePagination, Populate } from "@utils";
 
 type IPostPopulated = Doc<Populate<IPost, "author">>;
 
 export async function getPosts(pagination: {
   skip?: string;
   limit?: string;
-}): Promise<IPostPopulated[]> {
+}): Promise<{
+  total: number;
+  hasMore: boolean;
+  pagination: {
+    skip: number;
+    limit: number;
+  };
+  data: IPostPopulated[];
+}> {
   const pages = parsePagination(pagination, 10);
 
-  const posts: IPostPopulated[] = await Post.find()
-    .skip(pages.skip)
-    .limit(pages.limit)
-    .populate("author")
-    .sort({ _id: -1 })
+  const [posts, totalPosts]: [IPostPopulated[], number] = await Promise.all([
+    Post.find()
+      .skip(pages.skip)
+      .limit(pages.limit)
+      .populateTs(["author"])
+      .select("-body")
+      .sort({ _id: -1 })
+      .lean(),
+    Post.estimatedDocumentCount(),
+  ]);
+
+  return {
+    total: totalPosts,
+    hasMore: pages.skip + pages.limit < totalPosts,
+    pagination: {
+      skip: pages.skip + pages.limit,
+      limit: pages.limit,
+    },
+    data: posts,
+  };
+}
+
+export async function getPost(uri: string): Promise<IPostPopulated> {
+  const post = await Post.findOne({
+    uri,
+  })
+    .populateTs(["author"])
     .lean();
 
-  return posts;
+  return post;
 }
 
 type CreatePostProps = {
@@ -38,7 +68,7 @@ async function getPostId(): Promise<number> {
       $inc: {
         counter: 1,
       },
-    } as any,
+    },
     {
       upsert: true,
       new: true,
@@ -71,4 +101,24 @@ export async function createPost(
     ...newPost.toObject(),
     author: user,
   };
+}
+
+export async function archivePost(postId: string): Promise<void> {
+  const post = await Post.findOne({
+    _id: postId,
+  }).lean();
+
+  if (!post) throw new HTTP400Error("Post not exists");
+
+  delete post._id;
+
+  await Promise.all([
+    Post.findOneAndDelete({
+      _id: postId,
+    }),
+    PostArchive.create({
+      ...post,
+      archivedAt: new Date().toISOString(),
+    }),
+  ]);
 }

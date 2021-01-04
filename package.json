@@ -30,7 +30,7 @@
     ]
   },
   "dependencies": {
-    "@typegoose/typegoose": "7.4.1",
+    "@typegoose/typegoose": "7.4.6",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "copyfiles": "^2.4.0",
@@ -41,11 +41,12 @@
     "helmet": "^3.22.0",
     "jsonwebtoken": "^8.5.1",
     "module-alias": "^2.2.2",
-    "mongoose": "^5.11.9",
+    "mongoose": "5.10.18",
     "mongoose-lean-getters": "^0.1.2",
     "morgan": "^1.10.0",
     "node-forge": "^0.10.0",
     "patch-package": "^6.2.2",
+    "postinstall-postinstall": "^2.1.0",
     "rimraf": "^3.0.2",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.7",

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 /* eslint-disable @typescript-eslint/ban-types */
-import { Model, Document, Query } from "mongoose";
+import { Model, Document, Query, DocumentQuery, Types } from "mongoose";
 
 import { getModelForClass } from "@typegoose/typegoose";
 
@@ -67,29 +67,28 @@ type ArrayFixOnlyActualRefs<T> = T extends (infer A)[]
   ? OnlyActualRefs<A>
   : OnlyActualRefs<T>;
 
-// Query.prototype.populateTs = function populateTs(props) {
-//   return this.populate(props);
-// };
+(Query.prototype as any).populateTs = function populateTs(props) {
+  return this.populate(props);
+};
 
 export interface MyModel<T, K extends Document = DocumentType<T>>
-  extends Model<K> {}
+  extends Model<K, T> {}
 
 export interface MyDocumentQuery<T, DocType extends Document, QueryHelpers = {}>
-  extends Query<T, DocType, QueryHelpers> {}
+  extends DocumentQuery<T, DocType, QueryHelpers> {}
 
-// declare module "mongoose" {
-//   interface Query<T, DocType extends Document<any>, QueryHelpers = {}>
-//     extends mquery {
-//     populateTs<P extends keyof ArrayFixOnlyActualRefs<QueryHelpers>>(
-//       prop: P[],
-//     ): Query<
-//       Doc<Populate<T extends (infer A)[] ? QueryHelpers[] : QueryHelpers, P>>,
-//       Doc<Populate<QueryHelpers, P>> & Document,
-//       QueryHelpers
-//     > &
-//       QueryHelpers;
-//   }
-// }
+declare module "mongoose" {
+  interface DocumentQuery<T, DocType extends Document, QueryHelpers = {}>
+    extends mquery {
+    populateTs<P extends keyof ArrayFixOnlyActualRefs<QueryHelpers>>(
+      prop: P[],
+    ): DocumentQuery<
+      Doc<Populate<T extends (infer A)[] ? QueryHelpers[] : QueryHelpers, P>>,
+      Doc<Populate<QueryHelpers, P>> & Document
+    > &
+      QueryHelpers;
+  }
+}
 
 export function getModel<T>(model: new () => T): MyModel<T> {
   return getModelForClass(model as any) as any;

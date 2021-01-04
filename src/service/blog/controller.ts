@@ -12,6 +12,14 @@ export async function getPosts(req: Req, res: Res): Promise<Res> {
   return res.json(posts);
 }
 
+export async function getPost(req: Req, res: Res): Promise<Res> {
+  const { uri } = req.params;
+
+  const post = await service.getPost(uri);
+
+  return res.json(post);
+}
+
 export async function createPost(req: Req, res: Res): Promise<Res> {
   const { userId } = req.user;
 
@@ -26,4 +34,12 @@ export async function createPost(req: Req, res: Res): Promise<Res> {
   );
 
   return res.json(post);
+}
+
+export async function archivePost(req: Req, res: Res): Promise<Res> {
+  const { id } = req.params;
+
+  await service.archivePost(id);
+
+  return res.json();
 }

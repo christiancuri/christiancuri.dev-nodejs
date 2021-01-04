@@ -80,7 +80,7 @@ export async function validateToken({
 }
 
 export async function needValidate(url: string): Promise<boolean> {
-  const whitelist = ["/api/system/login", "/api/blog/posts"];
+  const whitelist = ["/api/system/login", "/api/blog/post"];
 
   const whiteListEndsWidth = [];
 
