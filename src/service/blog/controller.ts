@@ -12,6 +12,12 @@ export async function getPosts(req: Req, res: Res): Promise<Res> {
   return res.json(posts);
 }
 
+export async function getPostsPaths(_: Req, res: Res): Promise<Res> {
+  const postsPaths = await service.getPostsPaths();
+
+  return res.json(postsPaths);
+}
+
 export async function getPost(req: Req, res: Res): Promise<Res> {
   const { uri } = req.params;
 

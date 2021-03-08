@@ -14,6 +14,7 @@ async function migrateAdminUsers(): Promise<void> {
   const defaultAdminUser = await User.countDocuments({
     email: DEFAULT_ADMIN_EMAIL,
   });
+
   if (!defaultAdminUser) {
     User.create({
       email: DEFAULT_ADMIN_EMAIL,

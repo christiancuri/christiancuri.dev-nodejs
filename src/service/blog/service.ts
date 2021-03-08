@@ -40,6 +40,11 @@ export async function getPosts(pagination: {
   };
 }
 
+export async function getPostsPaths(): Promise<{ uri: string }[]> {
+  const posts = await Post.find().select("uri").lean();
+  return posts as { uri: string }[];
+}
+
 export async function getPost(uri: string): Promise<IPostPopulated> {
   const post = await Post.findOne({
     uri,
