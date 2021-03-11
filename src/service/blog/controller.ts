@@ -26,6 +26,14 @@ export async function getPost(req: Req, res: Res): Promise<Res> {
   return res.json(post);
 }
 
+export async function getPostById(req: Req, res: Res): Promise<Res> {
+  const { id } = req.params;
+
+  const post = await service.getPostById(id);
+
+  return res.json(post);
+}
+
 export async function createPost(req: Req, res: Res): Promise<Res> {
   const { userId } = req.user;
 
@@ -40,6 +48,20 @@ export async function createPost(req: Req, res: Res): Promise<Res> {
   );
 
   return res.json(post);
+}
+
+export async function updatePost(req: Req, res: Res): Promise<Res> {
+  const { _id, title, picture, description, body } = req.body;
+
+  const updatedPost = await service.updatePost({
+    _id,
+    title,
+    picture,
+    description,
+    body,
+  });
+
+  return res.json(updatedPost);
 }
 
 export async function archivePost(req: Req, res: Res): Promise<Res> {

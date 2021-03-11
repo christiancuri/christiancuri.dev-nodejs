@@ -1,6 +1,9 @@
+import atob from "atob";
+import btoa from "btoa";
+
 import { IPost, Post, PostArchive, PostCounter, User } from "@models";
 
-import { Doc, HTTP400Error, parsePagination, Populate } from "@utils";
+import { clone, Doc, HTTP400Error, parsePagination, Populate } from "@utils";
 
 type IPostPopulated = Doc<Populate<IPost, "author">>;
 
@@ -52,15 +55,18 @@ export async function getPost(uri: string): Promise<IPostPopulated> {
     .populateTs(["author"])
     .lean();
 
+  post.body = atob(post.body);
+
   return post;
 }
 
-type CreatePostProps = {
-  title: string;
-  picture: string;
-  description: string;
-  body: string;
-};
+export async function getPostById(id: string): Promise<IPostPopulated> {
+  const post = await Post.findById(id).populateTs(["author"]).lean();
+
+  post.body = atob(post.body);
+
+  return post;
+}
 
 function sanitizePostTitle(title: string): string {
   return title.replace(/[^a-zA-Z0-9]/g, "_");
@@ -82,6 +88,13 @@ async function getPostId(): Promise<number> {
   return counter;
 }
 
+type CreatePostProps = {
+  title: string;
+  picture: string;
+  description: string;
+  body: string;
+};
+
 export async function createPost(
   { title, picture, description, body }: CreatePostProps,
   { userId }: { userId: string },
@@ -95,7 +108,7 @@ export async function createPost(
       title,
       picture,
       description,
-      body,
+      body: btoa(body),
       uri,
       author: userId,
     }),
@@ -106,6 +119,27 @@ export async function createPost(
     ...newPost.toObject(),
     author: user,
   };
+}
+
+export async function updatePost({
+  _id,
+  title,
+  picture,
+  description,
+  body,
+}: Doc<IPost>): Promise<IPostPopulated> {
+  if (!_id) throw new HTTP400Error("Missing post id");
+
+  const payload = clone({ title, description, body, picture });
+
+  if (!Object.keys(payload).length)
+    throw new HTTP400Error("Missing updated fields");
+
+  const updatedPost = await Post.findByIdAndUpdate(_id, payload, { new: true })
+    .populateTs(["author"])
+    .lean();
+
+  return updatedPost;
 }
 
 export async function archivePost(postId: string): Promise<void> {
