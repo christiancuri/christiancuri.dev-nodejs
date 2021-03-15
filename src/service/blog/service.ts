@@ -55,7 +55,7 @@ export async function getPost(uri: string): Promise<IPostPopulated> {
     .populateTs(["author"])
     .lean();
 
-  post.body = atob(post.body);
+  post.body = atob(post.body || "");
 
   return post;
 }
