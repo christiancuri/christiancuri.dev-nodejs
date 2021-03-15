@@ -5,6 +5,6 @@ export async function example({
   props,
 }: {
   props: string;
-}): Promise<{ example: boolean }> {
-  return { example: true };
+}): Promise<{ example: boolean; props: string }> {
+  return { example: true, props };
 }

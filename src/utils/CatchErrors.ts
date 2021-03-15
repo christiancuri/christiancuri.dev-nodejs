@@ -2,7 +2,7 @@ import { NextFunction } from "express";
 
 import { Req, Res } from "./types/express";
 
-export const CatchErrors = (fn) => async (
+export const CatchErrors = (fn: (...args: any) => Promise<any>) => async (
   req: Req,
   res: Res,
   next: NextFunction,
