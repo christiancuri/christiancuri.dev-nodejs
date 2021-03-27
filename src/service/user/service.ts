@@ -8,7 +8,7 @@ export async function getUserInfo(userId: string): Promise<Doc<IUser>> {
   if (!userId || !Types.ObjectId.isValid(userId))
     throw new HTTP400Error("Invalid id");
 
-  const user = await User.findById(userId).select("name email").lean();
+  const user = await User.findById(userId).select("name email picture").lean();
 
   if (!user) throw new HTTP400Error("User not found");
 

@@ -25,6 +25,9 @@ export class IUser extends TimeStamps {
   @prop({ required: true })
   public name: string;
 
+  @prop()
+  public picture: string;
+
   @prop({ required: true, select: false })
   public hash: string;
 
