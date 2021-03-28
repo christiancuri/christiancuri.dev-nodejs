@@ -4,13 +4,13 @@ import { IUser, User } from "@models";
 
 import { HTTP400Error, Doc, clone, PasswordHelper } from "@utils";
 
-const SELECT_USER_PUBLIC_FIELDS = {
+export const SELECT_USER_PUBLIC_FIELDS = {
   name: 1,
   email: 1,
   picture: 1,
 };
 
-type TSelectUserPublicFields = keyof typeof SELECT_USER_PUBLIC_FIELDS;
+export type TSelectUserPublicFields = keyof typeof SELECT_USER_PUBLIC_FIELDS;
 
 export async function getUserInfo(
   userId: string,
@@ -34,7 +34,9 @@ export async function updateUserInfo(
     picture,
     cPassword,
     nPassword,
-  }: Omit<Doc<IUser>, "_id"> & { cPassword: string; nPassword: string },
+  }: Partial<
+    Omit<Doc<IUser>, "_id"> & { cPassword: string; nPassword: string }
+  >,
 ): Promise<Pick<Doc<IUser>, TSelectUserPublicFields>> {
   if (!userId || !Types.ObjectId.isValid(userId))
     throw new HTTP400Error("Invalid id");
@@ -47,7 +49,7 @@ export async function updateUserInfo(
 
   if (!Object.keys(payload)) throw new HTTP400Error("Missing params");
 
-  const user = await User.findById(userId).select("+hash");
+  const user = await User.findById(userId).select("+hash +email");
 
   if (cPassword && nPassword) {
     if (!(await PasswordHelper.compare(cPassword, user.hash)))
