@@ -1,3 +1,5 @@
+import axios from "axios";
+
 import { IUser, User } from "@models";
 
 import {
@@ -43,5 +45,28 @@ export async function loginUser({
   const accessToken = await createLoginToken(user);
   return {
     accessToken,
+  };
+}
+
+export async function triggerDeploy(): Promise<{ status: number }> {
+  const response = await axios.post(
+    `https://api.github.com/repos/ChristianCuri-dev/christiancuri-site-nextjs/dispatches`,
+    {
+      event_type: "deploy",
+    },
+    {
+      headers: {
+        Accept: "application/vnd.github.everest-preview+json",
+        "Content-Type": "application/json",
+      },
+      auth: {
+        username: "x-oauth-basic",
+        password: process.env.GH_TOKEN,
+      },
+    },
+  );
+
+  return {
+    status: response.status,
   };
 }

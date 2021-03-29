@@ -9,3 +9,9 @@ export async function login(req: Req, res: Res): Promise<void> {
 
   res.json(userAccess);
 }
+
+export async function remoteDeploy(_: Req, res: Res): Promise<void> {
+  const status = await service.triggerDeploy();
+
+  res.json(status);
+}
