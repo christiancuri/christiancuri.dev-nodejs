@@ -135,11 +135,16 @@ export async function updatePost({
   if (!Object.keys(payload).length)
     throw new HTTP400Error("Missing updated fields");
 
+  if (payload.body) payload.body = btoa(payload.body);
+
   const updatedPost = await Post.findByIdAndUpdate(_id, payload, { new: true })
     .populateTs(["author"])
     .lean();
 
-  return updatedPost;
+  return {
+    ...updatedPost,
+    body: atob(updatedPost.body || ""),
+  };
 }
 
 export async function archivePost(postId: string): Promise<void> {
