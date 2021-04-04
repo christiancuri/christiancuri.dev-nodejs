@@ -10,10 +10,11 @@ type IPostPopulated = Doc<Populate<IPost, "author">>;
 export async function getPosts(pagination: {
   skip?: string;
   limit?: string;
+  all?: string | boolean;
 }): Promise<{
   total: number;
-  hasMore: boolean;
-  pagination: {
+  hasMore?: boolean;
+  pagination?: {
     skip: number;
     limit: number;
   };
@@ -21,26 +22,33 @@ export async function getPosts(pagination: {
 }> {
   const pages = parsePagination(pagination, 10);
 
+  let postQuery = Post.find();
+
+  if (!pagination.all) {
+    postQuery = postQuery.skip(pages.skip).limit(pages.limit);
+  }
+
   const [posts, totalPosts]: [IPostPopulated[], number] = await Promise.all([
-    Post.find()
-      .skip(pages.skip)
-      .limit(pages.limit)
-      .populateTs(["author"])
-      .select("-body")
-      .sort({ _id: -1 })
-      .lean(),
+    postQuery.populateTs(["author"]).select("-body").sort({ _id: -1 }).lean(),
     Post.estimatedDocumentCount(),
   ]);
 
-  return {
+  const response = {
     total: totalPosts,
-    hasMore: pages.skip + pages.limit < totalPosts,
-    pagination: {
-      skip: pages.skip + pages.limit,
-      limit: pages.limit,
-    },
     data: posts,
   };
+
+  if (!pagination.all) {
+    Object.assign(response, {
+      hasMore: pages.skip + pages.limit < totalPosts,
+      pagination: {
+        skip: pages.skip + pages.limit,
+        limit: pages.limit,
+      },
+    });
+  }
+
+  return response;
 }
 
 export async function getPostsPaths(): Promise<{ uri: string }[]> {
