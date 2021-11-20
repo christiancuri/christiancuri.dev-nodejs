@@ -61,6 +61,6 @@ jobs:
       - name: Update Environment
         if: "contains(github.event.commits.*.message, 'ci: skip') != true"
         run: |
-          ssh -tt anubis@${{ secrets.HOST_PRODUCTION }} 'sudo -i -u root bash -c "
+          ssh -o LogLevel=ERROR -tt anubis@${{ secrets.HOST_PRODUCTION }} 'sudo -i -u root bash -c "
             kubectl set image deployment ${{ github.event.repository.name }} ${{ github.event.repository.name }}=${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:${{ github.sha }}
           "'
