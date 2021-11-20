@@ -17,7 +17,7 @@ jobs:
 
       - name: Setup SSH
         if: "contains(github.event.commits.*.message, 'ci: skip') != true"
-        uses: webfactory/ssh-agent@v0.4.1
+        uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
