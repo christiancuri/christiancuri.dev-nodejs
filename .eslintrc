@@ -1,18 +1,6 @@
 {
-  "root": true,
-  "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "eslint-plugin-import-helpers"],
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended"
-  ],
+  "extends": ["./node_modules/@acciosolutions/ts-config/.eslintrc"],
   "rules": {
-    "no-bitwise": "off",
-    "radix": 0,
-    "no-console": "error",
-    "prefer-const": "error",
-    "@typescript-eslint/no-explicit-any": "off",
     "import-helpers/order-imports": [
       "warn",
       {

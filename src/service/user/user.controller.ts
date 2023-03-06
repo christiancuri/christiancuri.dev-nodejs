@@ -1,6 +1,6 @@
 import { Req, Res } from "@utils";
 
-import * as service from "./service";
+import * as service from "./user.service";
 
 export async function getUserInfo(req: Req, res: Res): Promise<void> {
   const { userId } = req.user;

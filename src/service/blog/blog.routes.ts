@@ -2,7 +2,7 @@ import express from "express";
 
 import { CatchErrors } from "@utils";
 
-import * as controller from "./controller";
+import * as controller from "./blog.controller";
 
 export default express
   .Router()

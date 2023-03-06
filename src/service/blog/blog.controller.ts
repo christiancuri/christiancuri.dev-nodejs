@@ -2,7 +2,7 @@ import { Req, Res } from "@types";
 
 import { Validator } from "@utils";
 
-import * as service from "./service";
+import * as service from "./blog.service";
 
 export async function getPosts(req: Req, res: Res): Promise<Res> {
   const pagination = req.query;

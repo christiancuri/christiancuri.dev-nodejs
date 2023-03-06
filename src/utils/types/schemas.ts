@@ -1,19 +1,31 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
+
+import { clone } from "../ObjectUtils";
 
 export const id = {
-  type: "ObjectId",
+  type: mongoose.Schema.Types.ObjectId,
   auto: true,
-  get: String,
-  set: (v) => v,
+  get: (v) => {
+    try {
+      return String(v);
+    } catch (error) {
+      return v;
+    }
+  },
 };
 
 export const refOpts = {
-  type: "ObjectId",
-  get: (val) => (Types.ObjectId.isValid(val) ? String(val) : val),
-  set: (val) => Types.ObjectId(String(val)),
+  type: mongoose.Schema.Types.ObjectId,
+  get: (val: Types.ObjectId | Types.ObjectId[]): string | string[] => {
+    try {
+      return clone<string | string[]>(val as any);
+    } catch (error) {
+      return val as any;
+    }
+  },
 };
 
+export const archivedProp = { default: false, select: false };
 export const schemaOptions = {
   timestamps: true,
   minimize: false,

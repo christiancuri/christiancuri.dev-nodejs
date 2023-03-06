@@ -18,7 +18,7 @@ export { Migrator, PasswordHelper, TokenUtils, Validator, MongoDB, Encrypt };
 
 export * from "./logger";
 export * from "./CatchErrors";
-export * from "./clone";
+export * from "./ObjectUtils";
 export * from "./types";
 export * from "./Pagination";
 export { default as app } from "./server";

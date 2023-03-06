@@ -1,0 +1,30 @@
+diff --git a/node_modules/mongoose/lib/document.js b/node_modules/mongoose/lib/document.js
+index db5347f..2f27891 100644
+--- a/node_modules/mongoose/lib/document.js
++++ b/node_modules/mongoose/lib/document.js
+@@ -3739,6 +3739,12 @@ Document.prototype.$toObject = function(options, json) {
+  */
+ 
+ Document.prototype.toObject = function(options) {
++  if (!options) {
++    options = {
++      getters: true,
++      virtuals: true
++    };
++  }
+   return this.$toObject(options);
+ };
+ 
+@@ -4009,6 +4015,12 @@ function omitDeselectedFields(self, json) {
+  */
+ 
+ Document.prototype.toJSON = function(options) {
++  if (!options) {
++    options = {
++      getters: true,
++      virtuals: true
++    };
++  }
+   return this.$toObject(options, true);
+ };
+ 
