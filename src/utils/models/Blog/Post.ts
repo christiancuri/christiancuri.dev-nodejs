@@ -3,13 +3,15 @@ import getters from "mongoose-lean-getters";
 import { schemaOptions, getModel, id, Reference, refOpts } from "@types";
 
 import { prop, modelOptions, plugin } from "@typegoose/typegoose";
-import { TimeStamps } from "@typegoose/typegoose/lib/defaultClasses";
+import { Base, TimeStamps } from "@typegoose/typegoose/lib/defaultClasses";
 
 import { IUser } from "../User";
 
-export class IPostProps extends TimeStamps {
+export class IPostProps extends TimeStamps implements Base<string> {
+  id: string;
+
   @prop(id)
-  public _id?: string;
+  public _id: string;
 
   @prop({ required: true })
   public title: string;
@@ -26,7 +28,7 @@ export class IPostProps extends TimeStamps {
   @prop()
   public body?: string;
 
-  @prop({ required: true, ref: IUser, ...refOpts })
+  @prop({ required: true, ref: () => IUser, ...refOpts })
   public author: Reference<IUser>;
 }
 

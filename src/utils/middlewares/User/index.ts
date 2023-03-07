@@ -4,16 +4,15 @@ import { Req, Res } from "@/utils/types";
 
 export async function UserMiddleware(
   req: Req,
-  res: Res,
+  _res: Res,
   next: NextFunction,
 ): Promise<void> {
   if (req.user) {
-    req.user.ip =
-      req.headers["cf-connecting-ip"] ||
+    req.user.ip = (req.headers["cf-connecting-ip"] ||
       req.headers["x-forwarded-for"] ||
       req.headers["x-real-ip"] ||
       req.connection.remoteAddress ||
-      req.ip;
+      req.ip) as string;
   }
   next();
 }

@@ -17,7 +17,7 @@ export async function router(app: Express): Promise<Express> {
     .use(blogRoutes)
     .use(userRoutes);
 
-  app.use("/api", router).use(ErrorHandle);
+  app.use("/", router).use(ErrorHandle);
 
   return app;
 }

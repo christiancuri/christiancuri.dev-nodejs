@@ -3,7 +3,7 @@ import getters from "mongoose-lean-getters";
 import { schemaOptions, getModel, id } from "@types";
 
 import { prop, modelOptions, plugin } from "@typegoose/typegoose";
-import { TimeStamps } from "@typegoose/typegoose/lib/defaultClasses";
+import { Base, TimeStamps } from "@typegoose/typegoose/lib/defaultClasses";
 
 export enum UserRole {
   MEMBER = "member",
@@ -15,9 +15,11 @@ export enum UserRole {
   options: { customName: "user" },
   schemaOptions,
 })
-export class IUser extends TimeStamps {
+export class IUser extends TimeStamps implements Base<string> {
+  id: string;
+
   @prop(id)
-  public _id?: string;
+  public _id: string;
 
   @prop({ required: true, select: false })
   public email: string;

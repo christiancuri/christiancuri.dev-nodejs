@@ -3,16 +3,18 @@ import getters from "mongoose-lean-getters";
 import { schemaOptions, getModel, id } from "@types";
 
 import { prop, modelOptions, plugin } from "@typegoose/typegoose";
-import { TimeStamps } from "@typegoose/typegoose/lib/defaultClasses";
+import { Base, TimeStamps } from "@typegoose/typegoose/lib/defaultClasses";
 
 @plugin(getters)
 @modelOptions({
   options: { customName: "postCounter" },
   schemaOptions,
 })
-export class IPostCounter extends TimeStamps {
+export class IPostCounter extends TimeStamps implements Base<string> {
+  id: string;
+
   @prop(id)
-  public _id?: string;
+  public _id: string;
 
   @prop({ default: 0 })
   public counter?: number;

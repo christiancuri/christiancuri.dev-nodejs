@@ -8,14 +8,20 @@ export async function connect(pid = "Not informed"): Promise<void> {
   const config = {
     url,
     params: {
-      useUnifiedTopology: true,
       useNewUrlParser: true,
-      useCreateIndex: true,
-      useFindAndModify: false,
-      keepAlive: true,
-      keepAliveInitialDelay: 300000,
     },
   };
+
+  function setRunValidators() {
+    this.setOptions({ runValidators: true });
+  }
+
+  mongoose.plugin((schema) => {
+    schema.pre("findOneAndUpdate", setRunValidators);
+    schema.pre("updateMany", setRunValidators);
+    schema.pre("updateOne", setRunValidators);
+    schema.pre("update", setRunValidators);
+  });
 
   mongoose.connect(config.url, config.params);
 

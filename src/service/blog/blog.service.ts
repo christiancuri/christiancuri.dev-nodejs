@@ -28,10 +28,14 @@ export async function getPosts(pagination: {
     postQuery = postQuery.skip(pages.skip).limit(pages.limit);
   }
 
-  const [posts, totalPosts]: [IPostPopulated[], number] = await Promise.all([
-    postQuery.populateTs(["author"]).select("-body").sort({ _id: -1 }).lean(),
-    Post.estimatedDocumentCount(),
-  ]);
+  // TODO: Fix promise.all response type (the postQuery error when trying assign IPostPopulated)
+  const totalPostsPromise = Post.estimatedDocumentCount();
+  const posts: IPostPopulated[] = await postQuery
+    .populate("author")
+    .select("-body")
+    .sort({ _id: -1 })
+    .lean();
+  const totalPosts = await totalPostsPromise;
 
   const response = {
     total: totalPosts,
@@ -57,10 +61,10 @@ export async function getPostsPaths(): Promise<{ uri: string }[]> {
 }
 
 export async function getPost(uri: string): Promise<IPostPopulated> {
-  const post = await Post.findOne({
+  const post: IPostPopulated = await Post.findOne({
     uri,
   })
-    .populateTs(["author"])
+    .populate("author")
     .lean();
 
   post.body = atob(post.body || "");
@@ -69,7 +73,9 @@ export async function getPost(uri: string): Promise<IPostPopulated> {
 }
 
 export async function getPostById(id: string): Promise<IPostPopulated> {
-  const post = await Post.findById(id).populateTs(["author"]).lean();
+  const post: IPostPopulated = await Post.findById(id)
+    .populate("author")
+    .lean();
 
   post.body = atob(post.body);
 
@@ -145,8 +151,12 @@ export async function updatePost({
 
   if (payload.body) payload.body = btoa(payload.body);
 
-  const updatedPost = await Post.findByIdAndUpdate(_id, payload, { new: true })
-    .populateTs(["author"])
+  const updatedPost: IPostPopulated = await Post.findByIdAndUpdate(
+    _id,
+    payload,
+    { new: true },
+  )
+    .populate("author")
     .lean();
 
   return {

@@ -1,4 +1,4 @@
-import { json, urlencoded } from "body-parser";
+import { json } from "body-parser";
 import cors from "cors";
 import express from "express";
 import fileUpload from "express-fileupload";
@@ -18,12 +18,6 @@ app
   .use(cors())
   .use(
     json({
-      limit: "20mb",
-    }),
-  )
-  .use(
-    urlencoded({
-      extended: true,
       limit: "20mb",
     }),
   )
@@ -47,7 +41,7 @@ app
   )
   .set("trust proxy", true);
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 httpServer.listen(port, () => logger.info(`Running on port ${port}`));
 
 export default app;

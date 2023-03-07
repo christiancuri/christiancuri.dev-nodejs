@@ -7,7 +7,7 @@ import { logger } from "../../";
 
 export function clientError(
   err: HTTPClientError,
-  req: Req,
+  _req: Req,
   res: Res,
   next: NextFunction,
 ): void {

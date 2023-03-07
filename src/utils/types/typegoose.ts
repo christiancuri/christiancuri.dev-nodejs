@@ -1,5 +1,6 @@
-import { getModelForClass } from "@typegoose/typegoose";
 import { Model, Document } from "mongoose";
+
+import { getModelForClass } from "@typegoose/typegoose";
 
 export type Reference<R> = string & { check?: R };
 
